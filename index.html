@@ -1,159 +1,406 @@
-<style>
-  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500&family=DM+Sans:wght@400;500&display=swap');
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Webflow Embed Converter</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&family=Outfit:wght@400;500;600&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg:        #0E0E10;
+      --surface:   #16161A;
+      --surface2:  #1C1C21;
+      --border:    #2A2A32;
+      --border2:   #38383F;
+      --text:      #E8E8F0;
+      --muted:     #6B6B7B;
+      --accent:    #5B6EF5;
+      --accent-h:  #7080FF;
+      --green:     #3DD68C;
+      --html:      #F26522;
+      --css:       #2D9CDB;
+      --js:        #F0C033;
+    }
 
-  * { box-sizing: border-box; margin: 0; padding: 0; }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
 
-  body {
-    font-family: 'DM Sans', sans-serif;
-    background: #F7F6F3;
-    min-height: 100vh;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    padding: 40px 20px;
-  }
+    body {
+      font-family: 'Outfit', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+    }
 
-  .card {
-    background: #fff;
-    border-radius: 16px;
-    padding: 32px;
-    width: 100%;
-    max-width: 580px;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.04);
-  }
+    /* ─── NAVBAR ─────────────────────────────────────────────── */
+    nav {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      height: 56px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
 
-  .header {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-bottom: 24px;
-  }
+    .nav-logo {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      text-decoration: none;
+      color: var(--text);
+    }
 
-  .title {
-    font-size: 15px;
-    font-weight: 500;
-    color: #111;
-    letter-spacing: -0.01em;
-  }
+    .nav-logo img {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      object-fit: cover;
+      /* Локальный путь к логотипу */
+      /* src="./assets/logo.png" */
+    }
 
-  .badge {
-    font-family: 'DM Mono', monospace;
-    font-size: 10px;
-    padding: 3px 8px;
-    border-radius: 6px;
-    background: #EDECEA;
-    color: #555;
-    letter-spacing: 0.04em;
-  }
+    .logo-placeholder {
+      width: 28px;
+      height: 28px;
+      border-radius: 7px;
+      background: linear-gradient(135deg, var(--accent) 0%, #8B5CF6 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
 
-  .field-label {
-    font-size: 11px;
-    font-weight: 500;
-    color: #666;
-    letter-spacing: 0.07em;
-    text-transform: uppercase;
-    margin-bottom: 8px;
-  }
+    .logo-placeholder svg {
+      width: 16px;
+      height: 16px;
+    }
 
-  textarea {
-    width: 100%;
-    min-height: 160px;
-    resize: vertical;
-    padding: 14px 16px;
-    font-family: 'DM Mono', monospace;
-    font-size: 12.5px;
-    line-height: 1.7;
-    background: #FAFAF8;
-    color: #111;
-    border: 1.5px solid #DEDAD5;
-    border-radius: 10px;
-    outline: none;
-    transition: border-color 0.15s;
-    caret-color: #111;
-  }
+    .nav-logo-text {
+      font-size: 14px;
+      font-weight: 600;
+      letter-spacing: -0.02em;
+    }
 
-  textarea::placeholder { color: #AAA69F; }
-  textarea:focus { border-color: #B0ADA8; background: #fff; }
+    .nav-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-  .bottom {
-    display: flex;
-    align-items: center;
-    justify-content: space-between;
-    margin-top: 20px;
-    gap: 12px;
-  }
+    .nav-btn {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 7px 14px;
+      border-radius: 8px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13px;
+      font-weight: 500;
+      cursor: pointer;
+      text-decoration: none;
+      transition: all 0.15s;
+      border: 1px solid transparent;
+    }
 
-  .btn-copy {
-    display: flex;
-    align-items: center;
-    gap: 8px;
-    padding: 11px 22px;
-    font-family: 'DM Sans', sans-serif;
-    font-size: 13.5px;
-    font-weight: 500;
-    cursor: pointer;
-    border: none;
-    border-radius: 10px;
-    background: #111;
-    color: #fff;
-    letter-spacing: -0.01em;
-    transition: background 0.15s, transform 0.1s;
-    white-space: nowrap;
-  }
+    .nav-btn-ghost {
+      background: transparent;
+      color: var(--muted);
+      border-color: var(--border);
+    }
+    .nav-btn-ghost:hover { color: var(--text); border-color: var(--border2); background: var(--surface2); }
 
-  .btn-copy:hover { background: #2a2a2a; }
-  .btn-copy:active { transform: scale(0.97); }
-  .btn-copy.copied { background: #1A7A5A; }
+    .nav-btn-support {
+      background: rgba(91, 110, 245, 0.15);
+      color: var(--accent-h);
+      border-color: rgba(91, 110, 245, 0.3);
+    }
+    .nav-btn-support:hover { background: rgba(91, 110, 245, 0.25); }
 
-  .status {
-    font-size: 12px;
-    color: #555;
-    opacity: 0;
-    transition: opacity 0.25s;
-    white-space: nowrap;
-  }
+    /* ─── MAIN ────────────────────────────────────────────────── */
+    main {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      padding: 28px 28px 24px;
+      gap: 20px;
+      max-width: 1400px;
+      width: 100%;
+      margin: 0 auto;
+    }
 
-  .status.visible { opacity: 1; color: #1A7A5A; }
+    .page-title {
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
 
-  .hint {
-    font-size: 12px;
-    color: #888;
-    line-height: 1.6;
-    text-align: right;
-    flex: 1;
-  }
+    .badge {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      padding: 2px 7px;
+      border-radius: 5px;
+      background: var(--surface2);
+      color: var(--muted);
+      border: 1px solid var(--border);
+      letter-spacing: 0.05em;
+    }
 
-  .hint strong { font-weight: 500; color: #555; }
-</style>
+    /* ─── EDITORS GRID ────────────────────────────────────────── */
+    .editors {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 14px;
+      flex: 1;
+    }
 
-<div class="card">
-  <div class="header">
-    <span class="title">Webflow Embed Converter</span>
+    .editor-panel {
+      display: flex;
+      flex-direction: column;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      overflow: hidden;
+      min-height: 360px;
+    }
+
+    .panel-header {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 14px;
+      border-bottom: 1px solid var(--border);
+      background: var(--surface2);
+      flex-shrink: 0;
+    }
+
+    .lang-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .panel-html .lang-dot { background: var(--html); }
+    .panel-css  .lang-dot { background: var(--css);  }
+    .panel-js   .lang-dot { background: var(--js);   }
+
+    .panel-html .panel-header { border-top: 2px solid var(--html); }
+    .panel-css  .panel-header { border-top: 2px solid var(--css);  }
+    .panel-js   .panel-header { border-top: 2px solid var(--js);   }
+
+    .lang-label {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 11px;
+      font-weight: 500;
+      color: var(--muted);
+      letter-spacing: 0.06em;
+      flex: 1;
+    }
+
+    .panel-html .lang-label { color: var(--html); }
+    .panel-css  .lang-label { color: var(--css);  }
+    .panel-js   .lang-label { color: var(--js);   }
+
+    .line-count {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10px;
+      color: var(--muted);
+    }
+
+    textarea {
+      flex: 1;
+      width: 100%;
+      resize: none;
+      padding: 14px 16px;
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 12.5px;
+      line-height: 1.75;
+      background: var(--surface);
+      color: var(--text);
+      border: none;
+      outline: none;
+      caret-color: var(--accent-h);
+      tab-size: 2;
+    }
+
+    textarea::placeholder { color: var(--border2); }
+    textarea:focus { background: #17171C; }
+
+    /* ─── BOTTOM BAR ──────────────────────────────────────────── */
+    .bottom-bar {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 14px 20px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+    }
+
+    .btn-copy {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      padding: 10px 22px;
+      font-family: 'Outfit', sans-serif;
+      font-size: 13.5px;
+      font-weight: 600;
+      cursor: pointer;
+      border: none;
+      border-radius: 9px;
+      background: var(--accent);
+      color: #fff;
+      letter-spacing: -0.01em;
+      transition: all 0.15s;
+      white-space: nowrap;
+      flex-shrink: 0;
+    }
+
+    .btn-copy:hover { background: var(--accent-h); transform: translateY(-1px); box-shadow: 0 4px 16px rgba(91,110,245,0.35); }
+    .btn-copy:active { transform: scale(0.97) translateY(0); }
+    .btn-copy.copied { background: var(--green); box-shadow: 0 4px 16px rgba(61,214,140,0.3); }
+
+    .status {
+      font-size: 12.5px;
+      color: var(--green);
+      opacity: 0;
+      transition: opacity 0.2s;
+      white-space: nowrap;
+      font-family: 'JetBrains Mono', monospace;
+    }
+    .status.visible { opacity: 1; }
+
+    .bar-spacer { flex: 1; }
+
+    .hint {
+      font-size: 12px;
+      color: var(--muted);
+    }
+    .hint kbd {
+      font-family: 'JetBrains Mono', monospace;
+      font-size: 10.5px;
+      background: var(--surface2);
+      border: 1px solid var(--border2);
+      border-radius: 5px;
+      padding: 2px 6px;
+      color: var(--text);
+    }
+
+    /* ─── RESPONSIVE ──────────────────────────────────────────── */
+    @media (max-width: 900px) {
+      .editors { grid-template-columns: 1fr; }
+      .editor-panel { min-height: 220px; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ════ NAVBAR ════════════════════════════════════════════════ -->
+<nav>
+  <a class="nav-logo" href="#">
+      <img src="./assets/logo.png" alt="logo" />
+  </a>
+
+  <div class="nav-actions">
+    <a href="mailto:hello@example.com" class="nav-btn nav-btn-ghost">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="1" y="2.5" width="12" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M1 4.5L7 8.5L13 4.5" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
+      Связаться
+    </a>
+  </div>
+</nav>
+
+<!-- ════ MAIN ══════════════════════════════════════════════════ -->
+<main>
+
+  <div class="page-title">
+    Webflow Embed Converter
     <span class="badge">HTML → JSON</span>
   </div>
 
-  <div class="field-label">Код</div>
-  <textarea id="input" placeholder="<div>
-  <!-- вставь HTML/JS/CSS сюда -->
-</div>" spellcheck="false"></textarea>
+  <!-- Editors -->
+  <div class="editors">
 
-  <div class="bottom">
+    <div class="editor-panel panel-html">
+      <div class="panel-header">
+        <span class="lang-dot"></span>
+        <span class="lang-label">HTML</span>
+        <span class="line-count" id="lc-html">0 lines</span>
+      </div>
+      <textarea id="input-html" placeholder="<div>
+  <!-- разметка -->
+</div>" spellcheck="false"></textarea>
+    </div>
+
+    <div class="editor-panel panel-css">
+      <div class="panel-header">
+        <span class="lang-dot"></span>
+        <span class="lang-label">CSS</span>
+        <span class="line-count" id="lc-css">0 lines</span>
+      </div>
+      <textarea id="input-css" placeholder=".selector {
+  /* стили */
+}" spellcheck="false"></textarea>
+    </div>
+
+    <div class="editor-panel panel-js">
+      <div class="panel-header">
+        <span class="lang-dot"></span>
+        <span class="lang-label">JS</span>
+        <span class="line-count" id="lc-js">0 lines</span>
+      </div>
+      <textarea id="input-js" placeholder="// скрипты
+document.addEventListener('DOMContentLoaded', () => {
+
+});" spellcheck="false"></textarea>
+    </div>
+
+  </div>
+
+  <!-- Bottom bar -->
+  <div class="bottom-bar">
     <button class="btn-copy" id="copyBtn" onclick="copyJSON()">
-      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
-        <rect x="4" y="4" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
-        <path d="M3 9H2C1.44772 9 1 8.55228 1 8V2C1 1.44772 1.44772 1 2 1H8C8.55228 1 9 1.44772 9 2V3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
-      </svg>
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none"><rect x="4" y="4" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/><path d="M3 9H2C1.44772 9 1 8.55228 1 8V2C1 1.44772 1.44772 1 2 1H8C8.55228 1 9 1.44772 9 2V3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/></svg>
       Скопировать JSON
     </button>
-    <span class="status" id="status"></span>
-    <span class="hint">Cmd+V в Webflow <strong>Embed</strong></span>
+    <span class="status" id="status">✓ скопировано</span>
+    <div class="bar-spacer"></div>
+    <span class="hint">Вставить в Webflow: <kbd>Cmd+V</kbd> в блок <kbd>Embed</kbd></span>
   </div>
-</div>
+
+</main>
 
 <script>
-  const input = document.getElementById('input');
-  const status = document.getElementById('status');
+  // ─── Line counters ────────────────────────────────────────
+  function countLines(ta, lcId) {
+    const lines = ta.value ? ta.value.split('\n').length : 0;
+    document.getElementById(lcId).textContent = lines + (lines === 1 ? ' line' : ' lines');
+  }
 
+  ['html','css','js'].forEach(lang => {
+    const ta = document.getElementById('input-' + lang);
+    ta.addEventListener('input', () => countLines(ta, 'lc-' + lang));
+    // Tab key → indent
+    ta.addEventListener('keydown', e => {
+      if (e.key === 'Tab') {
+        e.preventDefault();
+        const s = ta.selectionStart, end = ta.selectionEnd;
+        ta.value = ta.value.substring(0, s) + '  ' + ta.value.substring(end);
+        ta.selectionStart = ta.selectionEnd = s + 2;
+        countLines(ta, 'lc-' + lang);
+      }
+    });
+  });
+
+  // ─── JSON builder ─────────────────────────────────────────
   function generateId() {
     return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
       const r = Math.random() * 16 | 0;
@@ -161,88 +408,79 @@
     });
   }
 
+  function assembleCode() {
+    const html = document.getElementById('input-html').value.trim();
+    const css  = document.getElementById('input-css').value.trim();
+    const js   = document.getElementById('input-js').value.trim();
+
+    let parts = [];
+    if (css)  parts.push(`<style>\n${css}\n</style>`);
+    if (html) parts.push(html);
+    if (js)   parts.push(`<script>\n${js}\n<\/script>`);
+    return parts.join('\n\n');
+  }
+
   function buildWebflowEmbed(code) {
-    if (!code.trim()) return null;
     const id = generateId();
     return {
       "type": "@webflow/XscpData",
       "payload": {
-        "nodes": [
-          {
-            "_id": id,
-            "type": "HtmlEmbed",
-            "tag": "div",
-            "classes": [],
-            "children": [],
-            "v": code,
-            "data": {
-              "search": { "exclude": true },
-              "embed": {
-                "type": "html",
-                "meta": {
-                  "html": code,
-                  "div": false,
-                  "iframe": false,
-                  "script": false,
-                  "compilable": false
-                }
-              },
-              "insideRTE": false,
-              "content": "",
-              "devlink": { "runtimeProps": {}, "slot": "" },
-              "displayName": "",
-              "attr": { "id": "" },
-              "xattr": [],
-              "visibility": {
-                "conditions": [],
-                "keepInHtml": { "tag": "False", "val": {} }
-              }
-            }
+        "nodes": [{
+          "_id": id,
+          "type": "HtmlEmbed",
+          "tag": "div",
+          "classes": [],
+          "children": [],
+          "v": code,
+          "data": {
+            "search": { "exclude": true },
+            "embed": {
+              "type": "html",
+              "meta": { "html": code, "div": false, "iframe": false, "script": false, "compilable": false }
+            },
+            "insideRTE": false,
+            "content": "",
+            "devlink": { "runtimeProps": {}, "slot": "" },
+            "displayName": "",
+            "attr": { "id": "" },
+            "xattr": [],
+            "visibility": { "conditions": [], "keepInHtml": { "tag": "False", "val": {} } }
           }
-        ],
+        }],
         "styles": [],
         "assets": [],
         "ix1": [],
-        "ix2": {
-          "interactions": [],
-          "events": [],
-          "actionLists": []
-        }
+        "ix2": { "interactions": [], "events": [], "actionLists": [] }
       },
       "meta": {
-        "droppedLinks": 0,
-        "dynBindRemovedCount": 0,
-        "dynListBindRemovedCount": 0,
-        "paginationRemovedCount": 0,
-        "universalBindingsRemovedCount": 0,
-        "unlinkedSymbolCount": 0,
-        "codeComponentsRemovedCount": 0
+        "droppedLinks": 0, "dynBindRemovedCount": 0, "dynListBindRemovedCount": 0,
+        "paginationRemovedCount": 0, "universalBindingsRemovedCount": 0,
+        "unlinkedSymbolCount": 0, "codeComponentsRemovedCount": 0
       }
     };
   }
 
   function copyJSON() {
-    const code = input.value;
-    if (!code.trim()) {
-      showStatus('⚠ Нет кода', false);
-      return;
-    }
-    const jsonObject = buildWebflowEmbed(code);
-    pendingJSON = JSON.stringify(jsonObject);
+    const code = assembleCode();
+    if (!code) { showStatus('⚠ нет кода', false); return; }
+    pendingJSON = JSON.stringify(buildWebflowEmbed(code));
     hiddenTrigger.focus();
     document.execCommand('copy');
   }
 
-  function showStatus(text, isSuccess) {
-    status.textContent = text;
-    status.classList.add('visible');
-    if (isSuccess) document.getElementById('copyBtn').classList.add('copied');
+  function showStatus(text, ok) {
+    const s = document.getElementById('status');
+    const btn = document.getElementById('copyBtn');
+    s.textContent = text;
+    s.classList.add('visible');
+    if (ok) btn.classList.add('copied');
     setTimeout(() => {
-      status.classList.remove('visible');
-      if (isSuccess) document.getElementById('copyBtn').classList.remove('copied');
+      s.classList.remove('visible');
+      btn.classList.remove('copied');
     }, 2500);
   }
 
+  // ─── Clipboard hack ───────────────────────────────────────
   let pendingJSON = null;
   const hiddenTrigger = document.createElement('button');
   hiddenTrigger.contentEditable = 'true';
@@ -253,11 +491,13 @@
   });
   document.body.appendChild(hiddenTrigger);
 
-  hiddenTrigger.addEventListener('copy', (e) => {
+  hiddenTrigger.addEventListener('copy', e => {
     if (!pendingJSON) return;
     e.clipboardData.setData('application/json', pendingJSON);
     e.preventDefault();
     pendingJSON = null;
-    showStatus('✓ Скопировано', true);
+    showStatus('✓ скопировано', true);
   });
 </script>
+</body>
+</html>
