@@ -1,0 +1,329 @@
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=DM+Mono:ital,wght@0,400;0,500&family=DM+Sans:wght@400;500&display=swap');
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: #F7F6F3;
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 40px 20px;
+  }
+
+  .card {
+    background: #fff;
+    border-radius: 16px;
+    padding: 32px;
+    width: 100%;
+    max-width: 580px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.06), 0 4px 24px rgba(0,0,0,0.04);
+  }
+
+  .header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: 24px;
+  }
+
+  .title {
+    font-size: 15px;
+    font-weight: 500;
+    color: #111;
+    letter-spacing: -0.01em;
+  }
+
+  .badge {
+    font-family: 'DM Mono', monospace;
+    font-size: 10px;
+    padding: 3px 8px;
+    border-radius: 6px;
+    background: #F0EEE9;
+    color: #888;
+    letter-spacing: 0.04em;
+  }
+
+  .field-label {
+    font-size: 11px;
+    font-weight: 500;
+    color: #aaa;
+    letter-spacing: 0.07em;
+    text-transform: uppercase;
+    margin-bottom: 8px;
+  }
+
+  textarea {
+    width: 100%;
+    min-height: 160px;
+    resize: vertical;
+    padding: 14px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 12.5px;
+    line-height: 1.7;
+    background: #FAFAF8;
+    color: #111;
+    border: 1.5px solid #EDECEA;
+    border-radius: 10px;
+    outline: none;
+    transition: border-color 0.15s;
+    caret-color: #111;
+  }
+
+  textarea::placeholder { color: #C8C5BF; }
+  textarea:focus { border-color: #C0BDB8; background: #fff; }
+
+  .separator {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: 18px 0;
+  }
+
+  .sep-line {
+    flex: 1;
+    height: 1px;
+    background: #EDECEA;
+  }
+
+  .sep-arrow {
+    font-size: 13px;
+    color: #C8C5BF;
+    line-height: 1;
+  }
+
+  .output-area {
+    width: 100%;
+    padding: 14px 16px;
+    font-family: 'DM Mono', monospace;
+    font-size: 11.5px;
+    line-height: 1.7;
+    background: #FAFAF8;
+    color: #C0BDB8;
+    border: 1.5px solid #EDECEA;
+    border-radius: 10px;
+    min-height: 72px;
+    word-break: break-all;
+    white-space: pre-wrap;
+    user-select: all;
+    transition: border-color 0.15s, color 0.15s;
+  }
+
+  .output-area.has-content {
+    color: #555;
+    border-color: #DEDAD5;
+  }
+
+  .bottom {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: 18px;
+    gap: 12px;
+  }
+
+  .btn-copy {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    padding: 11px 22px;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 13.5px;
+    font-weight: 500;
+    cursor: pointer;
+    border: none;
+    border-radius: 10px;
+    background: #111;
+    color: #fff;
+    letter-spacing: -0.01em;
+    transition: background 0.15s, transform 0.1s;
+    white-space: nowrap;
+  }
+
+  .btn-copy:hover { background: #2a2a2a; }
+  .btn-copy:active { transform: scale(0.97); }
+  .btn-copy.copied { background: #1A7A5A; }
+
+  .status {
+    font-size: 12px;
+    color: #aaa;
+    opacity: 0;
+    transition: opacity 0.25s;
+    white-space: nowrap;
+  }
+
+  .status.visible { opacity: 1; color: #1A7A5A; }
+
+  .hint {
+    font-size: 12px;
+    color: #bbb;
+    line-height: 1.6;
+    text-align: right;
+    flex: 1;
+  }
+
+  .hint strong { font-weight: 500; color: #999; }
+</style>
+
+<div class="card">
+  <div class="header">
+    <span class="title">Webflow Embed Converter</span>
+    <span class="badge">HTML → JSON</span>
+  </div>
+
+  <div class="field-label">Код</div>
+  <textarea id="input" placeholder="<div>
+  <!-- вставь HTML/JS/CSS сюда -->
+</div>" spellcheck="false"></textarea>
+
+  <div class="separator">
+    <div class="sep-line"></div>
+    <div class="sep-arrow">↓</div>
+    <div class="sep-line"></div>
+  </div>
+
+  <div class="field-label">Embed JSON</div>
+  <div class="output-area" id="output">JSON появится здесь автоматически</div>
+
+  <div class="bottom">
+    <button class="btn-copy" id="copyBtn" onclick="copyJSON()">
+      <svg width="14" height="14" viewBox="0 0 14 14" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="4" y="4" width="9" height="9" rx="1.5" stroke="currentColor" stroke-width="1.3"/>
+        <path d="M3 9H2C1.44772 9 1 8.55228 1 8V2C1 1.44772 1.44772 1 2 1H8C8.55228 1 9 1.44772 9 2V3" stroke="currentColor" stroke-width="1.3" stroke-linecap="round"/>
+      </svg>
+      Скопировать JSON
+    </button>
+    <span class="status" id="status"></span>
+    <span class="hint">Cmd+V в Webflow <strong>Embed</strong></span>
+  </div>
+</div>
+
+<script>
+  const input = document.getElementById('input');
+  const output = document.getElementById('output');
+  const status = document.getElementById('status');
+
+  function generateId() {
+    return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, c => {
+      const r = Math.random() * 16 | 0;
+      return (c === 'x' ? r : (r & 0x3 | 0x8)).toString(16);
+    });
+  }
+
+  function buildWebflowEmbed(code) {
+    if (!code.trim()) return null;
+    const id = generateId();
+    return {
+      "type": "@webflow/XscpData",
+      "payload": {
+        "nodes": [
+          {
+            "_id": id,
+            "type": "HtmlEmbed",
+            "tag": "div",
+            "classes": [],
+            "children": [],
+            "v": code,
+            "data": {
+              "search": { "exclude": true },
+              "embed": {
+                "type": "html",
+                "meta": {
+                  "html": code,
+                  "div": false,
+                  "iframe": false,
+                  "script": false,
+                  "compilable": false
+                }
+              },
+              "insideRTE": false,
+              "content": "",
+              "devlink": { "runtimeProps": {}, "slot": "" },
+              "displayName": "",
+              "attr": { "id": "" },
+              "xattr": [],
+              "visibility": {
+                "conditions": [],
+                "keepInHtml": { "tag": "False", "val": {} }
+              }
+            }
+          }
+        ],
+        "styles": [],
+        "assets": [],
+        "ix1": [],
+        "ix2": {
+          "interactions": [],
+          "events": [],
+          "actionLists": []
+        }
+      },
+      "meta": {
+        "droppedLinks": 0,
+        "dynBindRemovedCount": 0,
+        "dynListBindRemovedCount": 0,
+        "paginationRemovedCount": 0,
+        "universalBindingsRemovedCount": 0,
+        "unlinkedSymbolCount": 0,
+        "codeComponentsRemovedCount": 0
+      }
+    };
+  }
+
+  function updateOutput() {
+    const code = input.value;
+    if (!code.trim()) {
+      output.textContent = 'JSON появится здесь автоматически';
+      output.classList.remove('has-content');
+      return;
+    }
+    const json = buildWebflowEmbed(code);
+    output.textContent = JSON.stringify(json, null, 2);
+    output.classList.add('has-content');
+  }
+
+  function copyJSON() {
+    const code = input.value;
+    if (!code.trim()) {
+      showStatus('⚠ Нет кода', false);
+      return;
+    }
+    const jsonObject = buildWebflowEmbed(code);
+    pendingJSON = JSON.stringify(jsonObject);
+    hiddenTrigger.focus();
+    document.execCommand('copy');
+  }
+
+  function showStatus(text, isSuccess) {
+    status.textContent = text;
+    status.classList.add('visible');
+    if (isSuccess) document.getElementById('copyBtn').classList.add('copied');
+    setTimeout(() => {
+      status.classList.remove('visible');
+      if (isSuccess) document.getElementById('copyBtn').classList.remove('copied');
+    }, 2500);
+  }
+
+  let pendingJSON = null;
+  const hiddenTrigger = document.createElement('button');
+  hiddenTrigger.contentEditable = 'true';
+  Object.assign(hiddenTrigger.style, {
+    position: 'fixed', clip: 'rect(1px,1px,1px,1px)',
+    clipPath: 'inset(0 0 99.9% 99.9%)', overflow: 'hidden',
+    height: '1px', width: '1px', padding: '0', border: '0'
+  });
+  document.body.appendChild(hiddenTrigger);
+
+  hiddenTrigger.addEventListener('copy', (e) => {
+    if (!pendingJSON) return;
+    e.clipboardData.setData('application/json', pendingJSON);
+    e.preventDefault();
+    pendingJSON = null;
+    showStatus('✓ Скопировано', true);
+  });
+
+  input.addEventListener('input', updateOutput);
+  updateOutput();
+</script>
